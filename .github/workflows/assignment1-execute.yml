@@ -1,20 +1,21 @@
 name: Execute Assignment 1 notebooks
 
 on:
-  push:
-    paths:
-      - ".github/workflows/assignment1-execute.yml"
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   execute:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out repository
+      - name: Check out pull request branch
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -41,16 +42,11 @@ jobs:
             --output-dir notebooks \
             --ExecutePreprocessor.timeout=900
 
-      - name: Commit executed notebooks
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add notebooks/01_first_look_and_discovery.ipynb notebooks/02_your_first_readable_model.ipynb
-          if git diff --cached --quiet; then
-            echo "No notebook changes to commit."
-          else
-            git commit -m "Execute Assignment 1 notebooks [skip ci]"
-            git push
-          fi
-
-# Trigger execution after workflow creation
+      - name: Upload executed notebooks
+        uses: actions/upload-artifact@v4
+        with:
+          name: assignment1-executed-notebooks
+          path: |
+            notebooks/01_first_look_and_discovery.ipynb
+            notebooks/02_your_first_readable_model.ipynb
+          if-no-files-found: error
