@@ -52,3 +52,5 @@ jobs:
             git commit -m "Execute Assignment 1 notebooks [skip ci]"
             git push
           fi
+
+# Trigger execution after workflow creation
