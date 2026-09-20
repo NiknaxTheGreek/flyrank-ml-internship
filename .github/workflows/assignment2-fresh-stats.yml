@@ -1,0 +1,52 @@
+name: Assignment 2 Fresh Stats
+
+on:
+  push:
+
+jobs:
+  compute:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install -q pandas
+      - name: Compute fresh Assignment 2 statistics
+        run: |
+          python - <<'PY'
+          import pandas as pd
+
+          path = "data/raw/content_refresh_anonymized.csv"
+          df = pd.read_csv(path)
+
+          high_vis = df["impressions_90d"] >= 3000
+          moderate_vis = df["impressions_90d"] >= 300
+          down = df["trend_direction"].eq("down")
+          page1 = df["avg_position"].gt(0) & df["avg_position"].le(10)
+          stale = df["days_since_last_update"].ge(90)
+          zero_click = df["clicks_90d"].eq(0)
+
+          rows = {
+              "total_pages": len(df),
+              "clients": df["client_id"].nunique(),
+              "down_pages": int(down.sum()),
+              "down_pct": 100 * down.mean(),
+              "high_visibility_pages_ge3000_impressions": int(high_vis.sum()),
+              "high_visibility_down_pages": int((high_vis & down).sum()),
+              "high_visibility_down_pct": 100 * (high_vis & down).sum() / high_vis.sum(),
+              "page1_moderate_visibility_pages": int((page1 & moderate_vis).sum()),
+              "page1_moderate_visibility_zero_click_pages": int((page1 & moderate_vis & zero_click).sum()),
+              "page1_moderate_visibility_zero_click_pct": 100 * (page1 & moderate_vis & zero_click).sum() / (page1 & moderate_vis).sum(),
+              "stale_high_visibility_down_pages": int((stale & high_vis & down).sum()),
+              "stale_high_visibility_down_pct_of_high_vis_down": 100 * (stale & high_vis & down).sum() / (high_vis & down).sum(),
+          }
+
+          print("ASSIGNMENT2_STATS_BEGIN")
+          for k, v in rows.items():
+              if isinstance(v, float):
+                  print(f"{k}={v:.4f}")
+              else:
+                  print(f"{k}={v}")
+          print("ASSIGNMENT2_STATS_END")
+          PY
