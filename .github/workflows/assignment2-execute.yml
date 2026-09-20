@@ -1,0 +1,31 @@
+name: Execute Assignment 2 Notebook
+
+on:
+  push:
+    paths:
+      - '.github/workflows/assignment2-execute.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  execute:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: assignment2-execute
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install -q pandas jupyter nbconvert
+      - name: Execute notebook
+        run: |
+          jupyter nbconvert --to notebook --execute work/notebooks/w01_research_question.ipynb --inplace --ExecutePreprocessor.timeout=120
+      - name: Commit executed notebook
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add work/notebooks/w01_research_question.ipynb
+          git commit -m "Execute Assignment 2 notebook"
+          git push origin assignment2-execute
