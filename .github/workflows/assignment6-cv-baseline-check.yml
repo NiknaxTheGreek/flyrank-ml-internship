@@ -75,3 +75,5 @@ jobs:
           fi
 
 # rerun after method-contract sync
+
+# rerun after deterministic row-order fix
