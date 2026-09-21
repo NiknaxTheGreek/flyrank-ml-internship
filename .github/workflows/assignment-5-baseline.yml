@@ -11,6 +11,10 @@ on:
       - ".github/workflows/assignment-5-baseline.yml"
   workflow_dispatch:
 
+concurrency:
+  group: assignment-5-baseline-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: write
 
