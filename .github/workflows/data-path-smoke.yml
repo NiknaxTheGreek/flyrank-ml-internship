@@ -1,7 +1,8 @@
 name: data-path-smoke
 
-# Executes the Assignment 4 data-contract notebook against the exact gated
-# FlyRank warehouse release referenced by this repository.
+# Executes Assignment 4 against the exact gated FlyRank warehouse release
+# referenced by this repository and saves the executed outputs back to the
+# deliverable notebook.
 on:
   push:
     branches: [main]
@@ -12,12 +13,16 @@ on:
       - ".github/workflows/data-path-smoke.yml"
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   run-assignment-4:
     runs-on: ubuntu-latest
     timeout-minutes: 35
     env:
       HF_TOKEN: ${{ secrets.HF_TOKEN }}
+
     steps:
       - uses: actions/checkout@v4
 
@@ -88,3 +93,19 @@ jobs:
           path: work/notebooks/w03_data_contract.executed.ipynb
           if-no-files-found: error
           retention-days: 7
+
+      - name: Save executed outputs into the deliverable notebook
+        run: |
+          cp work/notebooks/w03_data_contract.executed.ipynb work/notebooks/w03_data_contract.ipynb
+          rm work/notebooks/w03_data_contract.executed.ipynb
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add work/notebooks/w03_data_contract.ipynb
+          if git diff --cached --quiet; then
+            echo "No notebook changes to commit."
+          else
+            git commit -m "Save executed Assignment 4 outputs [skip ci]"
+            git push
+          fi
