@@ -1,56 +1,56 @@
 {
   "classification": {
-    "false_negatives": 58,
-    "false_positives": 305,
+    "false_negatives": 61,
+    "false_positives": 300,
     "selected_model": "RandomForestClassifier",
     "selected_params": {
       "class_weight": null,
       "max_depth": 4,
       "max_features": "sqrt",
-      "min_samples_leaf": 15
+      "min_samples_leaf": 5
     },
     "top_permutation_features": [
       {
         "feature": "aggregate_ctr",
-        "mean_auc_drop": 0.0459506683191616,
-        "sd_auc_drop": 0.01071869027724204
+        "mean_auc_drop": 0.04412553732233062,
+        "sd_auc_drop": 0.0088834796253277
       },
       {
         "feature": "position_iqr",
-        "mean_auc_drop": -0.00238245583759534,
-        "sd_auc_drop": 0.0050708917803779325
+        "mean_auc_drop": -0.002199099494838622,
+        "sd_auc_drop": 0.004935528722489943
       },
       {
         "feature": "position_slope_per_day",
-        "mean_auc_drop": -0.0037553732233064907,
-        "sd_auc_drop": 0.0032599747355776766
+        "mean_auc_drop": -0.0022732264441028436,
+        "sd_auc_drop": 0.0024410231565474083
       }
     ]
   },
   "regression": {
-    "largest_absolute_error": 9.31542524696342,
-    "median_absolute_error_observed": 0.5097798625229923,
+    "largest_absolute_error": 9.306892261743142,
+    "median_absolute_error_observed": 0.5097019214757774,
     "top_permutation_features": [
       {
         "feature": "aggregate_ctr",
-        "mean_rmse_increase": 0.04745033170015798,
-        "sd_rmse_increase": 0.005977532780781582
+        "mean_rmse_increase": 0.04517693121042632,
+        "sd_rmse_increase": 0.006121676860349257
       },
       {
         "feature": "position_slope_per_day",
-        "mean_rmse_increase": 0.0046379111961862285,
-        "sd_rmse_increase": 0.0008008496448054924
+        "mean_rmse_increase": 0.004736454810137047,
+        "sd_rmse_increase": 0.001229901846108873
       },
       {
         "feature": "median_position",
-        "mean_rmse_increase": 0.00014615638666871656,
-        "sd_rmse_increase": 0.0015512117280950491
+        "mean_rmse_increase": -0.00039697374013070164,
+        "sd_rmse_increase": 0.0011751973064060269
       }
     ]
   },
   "ranking": {
-    "top50_false_picks": 32,
-    "declines_missed_outside_top50": 296,
-    "top50_true_declines": 18
+    "top50_false_picks": 34,
+    "declines_missed_outside_top50": 298,
+    "top50_true_declines": 16
   }
 }
