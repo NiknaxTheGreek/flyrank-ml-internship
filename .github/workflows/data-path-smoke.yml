@@ -1,52 +1,90 @@
 name: data-path-smoke
 
-# Executes notebook 03 against the real hosted release so the weeks-3+ path
-# can never silently break. Needs the HF_TOKEN repo secret (read-only token);
-# skips cleanly where the secret is unavailable (e.g. forks).
-
+# Executes the Assignment 4 data-contract notebook against the exact gated
+# FlyRank warehouse release referenced by this repository.
 on:
   push:
     branches: [main]
     paths:
+      - "work/notebooks/w03_data_contract.ipynb"
       - "notebooks/03_working_with_the_full_release.ipynb"
       - "requirements.txt"
       - ".github/workflows/data-path-smoke.yml"
-  schedule:
-    - cron: "0 6 * * 1"   # Mondays 06:00 UTC — catches upstream drift weekly
   workflow_dispatch:
 
 jobs:
-  run-notebook-03:
+  run-assignment-4:
     runs-on: ubuntu-latest
     timeout-minutes: 35
     env:
       HF_TOKEN: ${{ secrets.HF_TOKEN }}
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Skip if no token (forks)
-        id: gate
+
+      - name: Require the repository HF_TOKEN
         run: |
           if [ -z "$HF_TOKEN" ]; then
-            echo "skip=true" >> "$GITHUB_OUTPUT"
-            echo "No HF_TOKEN secret — skipping data-path smoke."
-          else
-            echo "skip=false" >> "$GITHUB_OUTPUT"
+            echo "::error::HF_TOKEN repository secret is not configured."
+            exit 1
           fi
-      - name: Install
-        if: steps.gate.outputs.skip == 'false'
+
+      - name: Install notebook runtime
         run: |
           pip install -r requirements.txt
-          pip install nbformat nbclient ipykernel
-      - name: Execute notebook 03 against the live release
-        if: steps.gate.outputs.skip == 'false'
+          pip install nbformat nbclient ipykernel pandas duckdb
+
+      - name: Execute Assignment 4 against the gated warehouse
         run: |
           python - <<'PY'
           import nbformat
           from nbclient import NotebookClient
-          nb = nbformat.read("notebooks/03_working_with_the_full_release.ipynb", as_version=4)
-          NotebookClient(nb, timeout=1500, kernel_name="python3").execute()
-          print("notebook 03 executed clean against the hosted release")
+
+          src = "work/notebooks/w03_data_contract.ipynb"
+          out = "work/notebooks/w03_data_contract.executed.ipynb"
+
+          nb = nbformat.read(src, as_version=4)
+          client = NotebookClient(
+              nb,
+              timeout=1500,
+              kernel_name="python3",
+              resources={"metadata": {"path": "work/notebooks"}},
+          )
+          client.execute()
+          nbformat.write(nb, out)
+          print(f"EXECUTED_NOTEBOOK={out}")
           PY
+
+      - name: Print Assignment 4 outputs
+        run: |
+          python - <<'PY'
+          import nbformat
+
+          path = "work/notebooks/w03_data_contract.executed.ipynb"
+          nb = nbformat.read(path, as_version=4)
+
+          for i, cell in enumerate(nb.cells):
+              if cell.cell_type != "code" or not cell.get("outputs"):
+                  continue
+              print(f"===== CELL {i} =====")
+              for out in cell.outputs:
+                  if out.output_type == "stream":
+                      print(out.text)
+                  elif out.output_type in ("execute_result", "display_data"):
+                      data = out.get("data", {})
+                      if "text/plain" in data:
+                          print(data["text/plain"])
+                  elif out.output_type == "error":
+                      print(out.get("ename"), out.get("evalue"))
+          PY
+
+      - name: Upload executed Assignment 4 notebook
+        uses: actions/upload-artifact@v4
+        with:
+          name: w03-data-contract-executed
+          path: work/notebooks/w03_data_contract.executed.ipynb
+          if-no-files-found: error
+          retention-days: 7
