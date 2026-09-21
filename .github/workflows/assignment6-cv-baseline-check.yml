@@ -73,3 +73,5 @@ jobs:
             git commit -m "Execute Assignment 6 grouped CV baseline comparison [skip ci]"
             git push
           fi
+
+# rerun after method-contract sync
