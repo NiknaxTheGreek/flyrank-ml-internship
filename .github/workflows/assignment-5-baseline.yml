@@ -115,9 +115,12 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
           git add work/notebooks/w04_baseline_score.ipynb
-          if [ -f work/outputs/baseline_metrics.json ]; then
-            git add work/outputs/baseline_metrics.json
-          fi
+          for receipt in             work/outputs/baseline_metrics.json             work/outputs/baseline_split_manifest.json             work/outputs/multitask_baseline_benchmark.json
+          do
+            if [ -f "$receipt" ]; then
+              git add "$receipt"
+            fi
+          done
           if git diff --cached --quiet; then
             echo "No notebook changes to commit."
           else
