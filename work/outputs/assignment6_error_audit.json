@@ -33,18 +33,18 @@
     "top_permutation_features": [
       {
         "feature": "aggregate_ctr",
-        "mean_rmse_increase": 0.04102310484268138,
+        "mean_rmse_increase": 0.04102310484268116,
         "sd_rmse_increase": 0.008365242536503514
       },
       {
         "feature": "position_slope_per_day",
-        "mean_rmse_increase": 0.004211125245270819,
-        "sd_rmse_increase": 0.0014914731990594756
+        "mean_rmse_increase": 0.004211125245270586,
+        "sd_rmse_increase": 0.0014914731990594522
       },
       {
         "feature": "position_iqr",
-        "mean_rmse_increase": -0.00029861439576462924,
-        "sd_rmse_increase": 0.0012872379411700545
+        "mean_rmse_increase": -0.0002986143957648513,
+        "sd_rmse_increase": 0.0012872379411700498
       }
     ]
   },
