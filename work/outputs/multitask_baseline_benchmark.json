@@ -21,8 +21,8 @@
   "regression": {
     "name": "training_mean_future_change",
     "train_mean_future_change": -0.1567124448202151,
-    "test_mean_future_change": 0.4722108164076776,
-    "rmse": 1.4311128557344204,
+    "test_mean_future_change": 0.4722108164076777,
+    "rmse": 1.4311128557344202,
     "mae": 0.8124798805523925,
     "median_absolute_error": 0.38840741218591746,
     "r2": -0.23935552498275392
