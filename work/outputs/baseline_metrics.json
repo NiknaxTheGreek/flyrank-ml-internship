@@ -1,0 +1,20 @@
+{
+  "population_pages": 2520,
+  "queued_pages": 667,
+  "queued_share_pct": 26.46825396825397,
+  "population_decline_base_rate": 0.6611111111111111,
+  "queue_decline_rate": 0.7466266866566716,
+  "precision_at_10": 0.7,
+  "precision_at_20": 0.8,
+  "precision_at_50": 0.92,
+  "reason_codes": [
+    "LOW_CTR_FOR_POSITION"
+  ],
+  "action_labels": [
+    "REVIEW_CTR_REFRESH"
+  ],
+  "score_counts": {
+    "2": 552,
+    "3": 115
+  }
+}
