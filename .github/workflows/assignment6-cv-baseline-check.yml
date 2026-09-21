@@ -77,3 +77,5 @@ jobs:
 # rerun after method-contract sync
 
 # rerun after deterministic row-order fix
+
+# rerun after split-key assertion fix
