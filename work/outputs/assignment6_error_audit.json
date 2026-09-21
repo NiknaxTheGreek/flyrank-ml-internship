@@ -1,0 +1,63 @@
+{
+  "classification": {
+    "false_negatives": 33,
+    "false_positives": 349,
+    "top_standardized_coefficients": [
+      {
+        "feature": "content_age_days",
+        "standardized_coefficient": 0.758745067092342
+      },
+      {
+        "feature": "aggregate_ctr",
+        "standardized_coefficient": -0.36666275203761817
+      },
+      {
+        "feature": "median_position",
+        "standardized_coefficient": -0.15020546911854268
+      }
+    ],
+    "top_permutation_features": [
+      {
+        "feature": "aggregate_ctr",
+        "mean_auc_drop": 0.04620226851997116,
+        "sd_auc_drop": 0.011387840215025152
+      },
+      {
+        "feature": "position_iqr",
+        "mean_auc_drop": -0.0003525932666059717,
+        "sd_auc_drop": 0.0003598945486218063
+      },
+      {
+        "feature": "position_slope_per_day",
+        "mean_auc_drop": -0.0050104326817482754,
+        "sd_auc_drop": 0.0031498479105090834
+      }
+    ]
+  },
+  "regression": {
+    "largest_absolute_error": 9.387145019084693,
+    "median_absolute_error_observed": 0.5346957037991458,
+    "top_permutation_features": [
+      {
+        "feature": "aggregate_ctr",
+        "mean_rmse_increase": 0.06710359877799646,
+        "sd_rmse_increase": 0.008525092809525677
+      },
+      {
+        "feature": "position_slope_per_day",
+        "mean_rmse_increase": 0.010136120682621897,
+        "sd_rmse_increase": 0.0027346895627261493
+      },
+      {
+        "feature": "median_position",
+        "mean_rmse_increase": 0.0022173127703443373,
+        "sd_rmse_increase": 0.0014083779629377878
+      }
+    ]
+  },
+  "ranking": {
+    "top50_false_picks": 27,
+    "declines_missed_outside_top50": 291,
+    "top50_true_declines": 23
+  }
+}
