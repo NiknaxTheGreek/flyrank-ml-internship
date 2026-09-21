@@ -1,4 +1,5 @@
 name: data-path-smoke
+# rerun marker: cohort identity
 
 # Executes Assignment 4 against the exact gated FlyRank warehouse release
 # referenced by this repository and saves the executed outputs back to the
