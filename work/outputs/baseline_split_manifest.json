@@ -1,0 +1,40 @@
+{
+  "splitter": "GroupShuffleSplit",
+  "group_field": "client_hash_id",
+  "test_size": 0.25,
+  "random_state": 42,
+  "population_pages": 2520,
+  "population_clients": 21,
+  "train_pages": 1800,
+  "test_pages": 720,
+  "train_clients": [
+    "client_157ffe4d4a595515",
+    "client_1a730cb2640a1abf",
+    "client_20259bd6705d81d4",
+    "client_23a62021009f63c4",
+    "client_3197e6291363b4db",
+    "client_400c21c81c8b46ef",
+    "client_62f4a7e64f5e0096",
+    "client_65de48885f4ef01b",
+    "client_73cda7b4e4f265ea",
+    "client_9958f0a7ae1df715",
+    "client_a80fca3f171ed1de",
+    "client_c182d11e4862a37d",
+    "client_e5c2aa26a8598242",
+    "client_fef1a8f436438636",
+    "client_ff644d8251367cbb"
+  ],
+  "test_clients": [
+    "client_08a6a72ff48e62c0",
+    "client_0fa64a184f18a4a0",
+    "client_2094c6eb080311d5",
+    "client_3f0ce4d44fe94f3d",
+    "client_b10cb2997d0c7c86",
+    "client_e547b89c05043229"
+  ],
+  "client_overlap": [],
+  "classification_target": "future_impression_change < 0",
+  "regression_target": "future_impression_change",
+  "ranking_relevance": "future_impression_change < 0",
+  "ranking_k": 50
+}
