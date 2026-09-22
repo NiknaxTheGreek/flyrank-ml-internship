@@ -1,0 +1,54 @@
+{
+  "title": "Content Action Playbook \u2014 paper export",
+  "decision_support_use": "prioritize a top-50 human-review queue and provide a diagnostic starting point",
+  "queue": {
+    "pages": 50,
+    "review_priority_counts": {
+      "P1": 10,
+      "P2": 15,
+      "P3": 25
+    },
+    "archetype_counts": {
+      "CTR_AND_STALE": 8,
+      "CTR_OPPORTUNITY": 5,
+      "MODEL_RISK_ONLY": 20,
+      "STALE_RISK": 17
+    },
+    "reason_code_counts": {
+      "MODEL_TOP50_RISK": 50,
+      "LOW_CTR_FOR_POSITION": 13,
+      "STALE_366_PLUS": 25
+    }
+  },
+  "ranking_evidence": {
+    "grouped_development": {
+      "learned_precision_at_50": 0.8720000000000001,
+      "baseline_precision_at_50": 0.8240000000000001
+    },
+    "six_client_stress_test": {
+      "learned_precision_at_50": 0.36,
+      "baseline_precision_at_50": 0.48
+    }
+  },
+  "signal_interpretation": {
+    "ctr_relative_to_position": {
+      "verdict": "CONFIRMED",
+      "bottom_quartile_observed_decline_rate": 0.7466,
+      "top_quartile_observed_decline_rate": 0.5233,
+      "safe_interpretation": "diagnostic review cue; not an intervention effect"
+    },
+    "content_age": {
+      "verdict": "MIXED",
+      "youngest_bucket_observed_decline_rate": 0.5572,
+      "oldest_bucket_observed_decline_rate": 0.8496,
+      "safe_interpretation": "freshness-review cue; not proof of monotonic decay or refresh benefit"
+    }
+  },
+  "limits": {
+    "automatic_action_allowed": false,
+    "causal_effect_estimated": false,
+    "unseen_client_revalidation_required": true,
+    "observable_outcome_share": 0.8975747564432264
+  },
+  "paper_recommendation": "Use the model to prioritize a limited human-review queue with transparent reason codes; do not automate edits; revalidate before materially new client use."
+}
