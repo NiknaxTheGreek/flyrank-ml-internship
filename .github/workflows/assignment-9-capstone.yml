@@ -33,7 +33,7 @@ jobs:
       - name: Install notebook runtime
         run: |
           pip install -r requirements.txt
-          pip install nbformat nbclient ipykernel pandas
+          pip install nbformat nbclient ipykernel pandas matplotlib numpy
 
       - name: Execute capstone notebook
         run: |
@@ -96,6 +96,9 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add work/notebooks/capstone.ipynb
+          if [ -f work/figures/capstone_model_vs_baseline.png ]; then
+            git add work/figures/capstone_model_vs_baseline.png
+          fi
 
           if git diff --cached --quiet; then
             echo "No capstone execution changes to commit."
