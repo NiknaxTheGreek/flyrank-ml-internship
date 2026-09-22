@@ -104,6 +104,7 @@ jobs:
             work/outputs/action_playbook_queue.csv
             work/outputs/assignment8_action_playbook_metrics.json
             work/outputs/assignment8_paper_export.json
+            work/outputs/assignment8_completion_record.json
             work/figures/*
           if-no-files-found: warn
           retention-days: 7
@@ -125,6 +126,10 @@ jobs:
 
           if [ -f work/outputs/assignment8_paper_export.json ]; then
             git add work/outputs/assignment8_paper_export.json
+          fi
+
+          if [ -f work/outputs/assignment8_completion_record.json ]; then
+            git add work/outputs/assignment8_completion_record.json
           fi
 
           if [ -d work/figures ]; then
