@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Which Content Pages Should Be Reviewed First? — FlyRank ML Capstone</title>
+  <meta name="description" content="A leakage-safe content-prioritization proof of concept combining future-decline classification, signed-change regression, ranking and human-review diagnostics.">
+  <style>
+    :root{
+      --bg:#f7f8fa;--paper:#fff;--ink:#172033;--muted:#5b6578;--line:#dbe1e8;
+      --accent:#155e75;--accent2:#0f766e;--soft:#eef6f7;--warn:#7c2d12;--warnbg:#fff7ed;
+      --max:860px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:3px}
+    .hero{background:linear-gradient(180deg,#ecf7f7 0%,#f7f8fa 100%);border-bottom:1px solid var(--line)}
+    .hero-inner,.page{max-width:var(--max);margin:auto;padding:48px 24px}
+    .eyebrow{font-size:.78rem;text-transform:uppercase;letter-spacing:.12em;color:var(--accent2);font-weight:700}
+    h1{font-size:clamp(2.15rem,5vw,3.8rem);line-height:1.06;letter-spacing:-.035em;margin:.35rem 0 1rem}
+    .dek{font-size:1.2rem;line-height:1.5;max-width:760px;color:#334155}
+    .byline{color:var(--muted);margin:1rem 0}
+    .buttons{display:flex;flex-wrap:wrap;gap:.65rem;margin:1.25rem 0 1.5rem}
+    .button{display:inline-block;border:1px solid #aac3c8;border-radius:999px;padding:.52rem .9rem;background:white;text-decoration:none;font-weight:650}
+    .takeaway{border-left:4px solid var(--accent2);background:white;padding:1rem 1.15rem;margin:1.25rem 0;border-radius:0 8px 8px 0}
+    .meta{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:20px}
+    .meta div{background:rgba(255,255,255,.7);border:1px solid var(--line);border-radius:10px;padding:12px}
+    .meta strong{display:block;font-size:1.02rem}
+    nav{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+    nav .navinner{max-width:var(--max);margin:auto;padding:10px 24px;display:flex;gap:14px;overflow:auto;white-space:nowrap;font-size:.86rem}
+    nav a{text-decoration:none;color:#475569}
+    nav a:hover{color:var(--accent)}
+    section{padding:34px 0;border-bottom:1px solid var(--line)}
+    section:last-child{border-bottom:0}
+    h2{font-size:1.7rem;line-height:1.2;letter-spacing:-.02em;margin:0 0 1rem}
+    h3{font-size:1.15rem;margin:1.7rem 0 .5rem}
+    p{margin:.7rem 0}
+    .lead{font-size:1.08rem}
+    code{background:#eef2f6;padding:.08rem .28rem;border-radius:4px;font-size:.92em}
+    .table-wrap{overflow-x:auto;margin:1.15rem 0}
+    table{border-collapse:collapse;width:100%;min-width:650px;font-size:.94rem}
+    th,td{text-align:left;padding:.72rem .75rem;border-bottom:1px solid var(--line);vertical-align:top}
+    th{background:#f3f6f8;font-weight:700}
+    .good{font-weight:700}
+    .bad{font-weight:700;color:var(--warn)}
+    figure{margin:1.6rem 0 2rem}
+    figure img{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:10px;background:white}
+    figcaption{font-size:.9rem;color:var(--muted);margin-top:.55rem}
+    .caption-takeaway{display:block;color:var(--ink);margin-top:.25rem;font-weight:650}
+    .cards{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:1.2rem 0}
+    .card{border:1px solid var(--line);background:var(--paper);padding:16px;border-radius:10px}
+    .card strong{display:block;margin-bottom:4px}
+    .caution{background:var(--warnbg);border:1px solid #fed7aa;border-radius:10px;padding:14px 16px;margin:1.2rem 0}
+    .pipeline{background:var(--soft);border:1px solid #c8e1e4;padding:14px 16px;border-radius:10px;font-weight:700;text-align:center;margin:1.15rem 0}
+    ul,ol{padding-left:1.35rem}
+    .small{font-size:.9rem;color:var(--muted)}
+    footer{max-width:var(--max);margin:auto;padding:30px 24px 55px;color:var(--muted);font-size:.9rem}
+    @media(max-width:700px){
+      .hero-inner,.page{padding-left:18px;padding-right:18px}
+      .meta,.cards{grid-template-columns:1fr}
+      nav .navinner{padding-left:18px;padding-right:18px}
+      h1{font-size:2.35rem}
+    }
+  </style>
+</head>
+<body>
+<header class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">FlyRank ML Internship capstone</div>
+    <h1>Which Content Pages Should Be Reviewed First?</h1>
+    <p class="dek">A leakage-safe framework that moves from future-decline risk and signed performance change to a ranked, explainable human-review queue.</p>
+    <p class="byline">Nicholas Perikli</p>
+    <div class="buttons">
+      <a class="button" href="https://github.com/NiknaxTheGreek/flyrank-ml-internship">Repository</a>
+      <a class="button" href="https://github.com/NiknaxTheGreek/flyrank-ml-internship/blob/main/work/notebooks/capstone.ipynb">Capstone notebook</a>
+      <a class="button" href="https://flyrank.ai">FlyRank data credit</a>
+    </div>
+    <div class="takeaway"><strong>Empirical takeaway.</strong> The learned pipeline improved on its frozen baselines during client-separated development validation, but that advantage did not transfer consistently to six unseen clients: regression improved modestly, while classification and the final top-50 ranking did not beat baseline.</div>
+    <div class="meta">
+      <div><span class="small">Final POC</span><strong>2,520 pages · 21 clients</strong></div>
+      <div><span class="small">Decision point</span><strong>31 March 2026</strong></div>
+      <div><span class="small">Primary product metric</span><strong>Precision@50</strong></div>
+    </div>
+  </div>
+</header>
+
+<nav aria-label="Paper sections">
+  <div class="navinner">
+    <a href="#abstract">Abstract</a>
+    <a href="#introduction">Problem</a>
+    <a href="#data">Data</a>
+    <a href="#methodology">Methodology</a>
+    <a href="#results">Results</a>
+    <a href="#limitations">Limitations</a>
+    <a href="#recommendations">Recommendations</a>
+    <a href="#reproducibility">Reproducibility</a>
+    <a href="#acknowledgments">Acknowledgments</a>
+  </div>
+</nav>
+
+<main class="page">
+<section id="abstract">
+  <div class="eyebrow">1 · Title + Abstract</div>
+  <h2>Abstract</h2>
+  <p class="lead">This study investigates whether information available before a content-review decision can identify pages at risk of future search-performance decline and, more importantly, determine which pages should receive limited human attention first. From the pseudonymized FlyRank internship warehouse, a balanced proof-of-concept cohort of 2,520 pages across 21 clients was constructed through exposure-based stratification, while candidate predictors were grouped by behavioral role and reduced to five leakage-safe March 2026 features—<code>aggregate_ctr</code>, <code>median_position</code>, <code>position_slope_per_day</code>, <code>position_iqr</code>, and <code>content_age_days</code>—without using April outcomes for selection. Classification estimates whether future decline occurs, signed regression estimates the direction and magnitude of future impression change, and negative predicted change is converted to decline severity and combined with classification risk to rank a top-50 review queue; independent CTR and freshness diagnostics then attach transparent reason codes and rule-based action archetypes so a reviewer can understand why a page was surfaced. The pipeline showed useful signal during development validation that kept clients separated, but a six-client stress test exposed limited transfer: regression retained a modest improvement over its frozen baseline, while classification and the final ranking did not. The contribution is therefore a human-review decision-support framework—not an automated intervention system—that connects risk estimation, change estimation, prioritization and diagnostic guidance while requiring fresh client-level validation before broader operational use.</p>
+</section>
+
+<section id="introduction">
+  <div class="eyebrow">2 · Introduction / Problem</div>
+  <h2>From prediction to an allocation decision</h2>
+  <p>Large content inventories create an allocation problem before they create a modeling problem: a content or SEO team cannot inspect every page, so it needs a defensible way to decide <strong>what deserves attention first</strong>. A binary decline flag alone does not say how large the expected movement is, how pages should be ordered under limited review capacity, or why a surfaced page deserves investigation.</p>
+  <p>The project therefore decomposes the decision into a progression of standard tasks. Transparent grouping first structures the population and feature space; classification asks whether future decline occurs; signed regression estimates the size and direction of future change; and ranking combines decline risk with decline severity to allocate a fixed top-50 review budget.</p>
+  <p>The ranked output is then made interpretable through independently audited CTR-relative-to-position and freshness signals. These signals become reason codes and rule-based diagnostic archetypes that tell a reviewer where to investigate first, while stopping short of claiming that an edit will cause recovery.</p>
+  <p>A transparent rule baseline is retained throughout. The learned system is only useful where it improves the decision under an honest validation design, so negative results are preserved rather than hidden.</p>
+</section>
+
+<section id="data">
+  <div class="eyebrow">3 · Data</div>
+  <h2>Decision-time data, balanced before modeling</h2>
+  <p>The analysis uses the pseudonymized FlyRank internship warehouse release <code>flyrank_pseudonymized_warehouse_release_v20260703</code>. The documented release contains <strong>78,835,655</strong> rows in the daily content-performance fact table; that number describes warehouse scale, not the number of rows used to train the final models.</p>
+  <p>The final POC uses <strong>2,520 content pages from 21 pseudonymized clients</strong>. Pages are balanced across Low, Medium and High March exposure tiers—840 pages in each tier—to prevent large clients or highly visible pages from dominating the proof of concept. The balanced sample is therefore not a natural estimate of FlyRank-wide prevalence.</p>
+  <p><strong>Feature window:</strong> 1–31 March 2026. <strong>Decision cutoff:</strong> 31 March 2026. <strong>Outcome window:</strong> 1–30 April 2026. Pages require at least 20 usable GSC days in each month to support an evaluable future outcome.</p>
+  <p>The broader observability audit found 106,546 March feature-eligible pages across 37 clients; 95,633 had sufficient April observations, retaining <strong>89.76%</strong> of March-eligible pages for outcome evaluation.</p>
+  <div class="caution"><strong>Deliberate exclusions.</strong> Identifiers are not predictive features; absolute exposure is used for sampling rather than prediction; sparse GA4 fields, fixed query-90d fields with future-window risk, and mutable snapshot fields whose March-end state cannot be guaranteed are excluded.</div>
+</section>
+
+<section id="methodology">
+  <div class="eyebrow">4 · Methodology</div>
+  <h2>A justified progression toward the final ranking decision</h2>
+  <div class="pipeline">Exposure stratification → five-feature reduction → classification + signed-change regression → risk-severity ranking → diagnostic archetypes → human review</div>
+
+  <h3>Five pre-decision features</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Feature</th><th>Role</th></tr></thead>
+    <tbody>
+      <tr><td><code>aggregate_ctr</code></td><td>March click efficiency</td></tr>
+      <tr><td><code>median_position</code></td><td>Typical March search position</td></tr>
+      <tr><td><code>position_slope_per_day</code></td><td>Direction of March position movement</td></tr>
+      <tr><td><code>position_iqr</code></td><td>March position variability</td></tr>
+      <tr><td><code>content_age_days</code></td><td>Content age at the decision cutoff</td></tr>
+    </tbody>
+  </table></div>
+  <p>Candidate variables are grouped into behavioral families before reduction. Unsafe fields and obvious duplicates are removed first; the final five are chosen for decision-time availability, coverage, interpretability and non-redundant behavioral meaning. April outcomes are not used to select them.</p>
+
+  <h3>Three predictive components</h3>
+  <p><strong>Classification:</strong> <code>future_decline = future_impression_change &lt; 0</code>, answering “will the page decline?”</p>
+  <p><strong>Regression:</strong> <code>future_impression_change = (April avg impressions/day − March avg impressions/day) / March avg impressions/day</code>, answering “how much and in which direction will performance move?”</p>
+  <p><strong>Ranking:</strong> negative regression predictions are converted into non-negative decline severity and combined with classification risk:</p>
+  <p><code>ranking_score = p_decline^γ × (1 + λ × normalized_predicted_decline_severity)</code>, with grouped-development tuning selecting <code>γ = 2</code> and <code>λ = 1</code>.</p>
+
+  <h3>Baselines and validation</h3>
+  <p>The frozen baselines are a training-prior classifier, a training-mean regressor, and a transparent ranking rule based on low CTR relative to position plus a staleness boost. All comparisons use the same outcome definitions and evaluation populations.</p>
+  <p>The outer split is grouped by client with <code>GroupShuffleSplit(test_size=0.25, random_state=42)</code>: 1,800 pages from 15 clients for development and 720 pages from 6 unseen clients for the sealed stress test, with zero client overlap. Model selection uses five-fold client-grouped cross-validation on the development clients only.</p>
+
+  <figure>
+    <img src="assets/capstone_methodology_design.png" alt="Diagram showing March 2026 features, 31 March decision point, April 2026 outcome, and client-separated development and stress-test sets.">
+    <figcaption>Figure 1. Temporal information boundary and client-level validation design.<span class="caption-takeaway">Takeaway: April information is outside the feature boundary, and the final stress test uses clients absent from model development.</span></figcaption>
+  </figure>
+
+  <h3>Leakage control</h3>
+  <p>All five active features pass availability, target-derivation, future-overlap, decision-derivation and identifier checks. A deliberate target-derived leakage experiment raised grouped-CV classification ROC-AUC from 0.665 to 1.000, demonstrating how future information can make weak analysis look artificially perfect; the illegal field is excluded.</p>
+</section>
+
+<section id="results">
+  <div class="eyebrow">5 · Results</div>
+  <h2>Development signal did not transfer consistently to unseen clients</h2>
+  <p>Results are reported in two layers because development validation and unseen-client transfer answer different questions.</p>
+
+  <h3>Client-separated development validation</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Task</th><th>Metric</th><th>Frozen baseline</th><th>Learned</th><th>Direction</th></tr></thead>
+    <tbody>
+      <tr><td>Classification</td><td>ROC-AUC ↑</td><td>0.500</td><td class="good">0.665</td><td>Improved</td></tr>
+      <tr><td>Regression</td><td>RMSE ↓</td><td>0.852</td><td class="good">0.806</td><td>Improved</td></tr>
+      <tr><td>Ranking</td><td>Precision@50 ↑</td><td>0.824</td><td class="good">0.872</td><td>Improved</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Six-client sealed stress test</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Task</th><th>Metric</th><th>Frozen baseline</th><th>Learned</th><th>Interpretation</th></tr></thead>
+    <tbody>
+      <tr><td>Classification</td><td>ROC-AUC ↑</td><td class="good">0.500</td><td class="bad">0.494</td><td>Did not beat baseline</td></tr>
+      <tr><td>Regression</td><td>RMSE ↓</td><td>1.431</td><td class="good">1.379</td><td>Modest improvement</td></tr>
+      <tr><td>Ranking</td><td>Precision@50 ↑</td><td class="good">0.480</td><td class="bad">0.360</td><td>Underperformed baseline</td></tr>
+    </tbody>
+  </table></div>
+
+  <figure>
+    <img src="assets/capstone_model_vs_baseline.png" alt="Three-panel bar chart comparing frozen baselines and learned models for classification, regression and ranking in development validation and the six-client stress test.">
+    <figcaption>Figure 2. Learned model versus frozen baseline in the two validation layers.<span class="caption-takeaway">Takeaway: all three components improved during development validation, but only regression retained an improvement on six unseen clients.</span></figcaption>
+  </figure>
+
+  <p>The learned stress-test top 50 contained <strong>18 true future declines and 32 false picks</strong>. The finding is therefore validation-sensitive: the pipeline contains useful structure, but the primary ranked-review product did not generalize reliably to the six held-out clients.</p>
+
+  <h3>Why client separation matters</h3>
+  <p>A validation audit compared naive random-page CV with client-grouped CV on the same 1,800 development pages. Random-page validation reused all 15 clients across train and validation folds and produced classification ROC-AUC 0.725 and ranking Precision@50 0.948; client-grouped validation reduced client overlap to zero and produced 0.665 and 0.872 respectively. The more optimistic random-page results illustrate the risk of learning client-specific structure that does not transfer.</p>
+</section>
+
+<section id="limitations">
+  <div class="eyebrow">6 · Limitations & honest framing</div>
+  <h2>What this evidence can—and cannot—support</h2>
+  <div class="cards">
+    <div class="card"><strong>Unseen-client transfer</strong>Classification and ranking failed to beat their frozen baselines on six held-out clients, so reliable cross-client generalization is not established.</div>
+    <div class="card"><strong>Balanced POC sample</strong>The 2,520 pages are deliberately balanced by client and exposure tier; sample prevalence is not natural FlyRank-wide prevalence.</div>
+    <div class="card"><strong>Outcome observability</strong>89.76% of March feature-eligible pages had sufficient April observations; excluded pages may differ systematically.</div>
+    <div class="card"><strong>Short horizon</strong>The design tests March → April 2026, not seasonality, long-term drift or all future periods.</div>
+    <div class="card"><strong>Proxy outcome</strong>Future impression change is not revenue, conversion value, editorial value or intervention ROI.</div>
+    <div class="card"><strong>Observational design</strong>CTR and freshness signals are associated with outcomes; the project does not estimate treatment effects of edits or refreshes.</div>
+    <div class="card"><strong>Uncalibrated scores</strong>The risk/ranking scores support ordering, not literal probability statements.</div>
+    <div class="card"><strong>Narrow safe feature set</strong>Leakage safety and coverage exclusions may leave potentially useful information outside the POC.</div>
+  </div>
+  <p>The project uses grouping in four transparent ways—exposure strata, feature families, client validation groups and rule-based diagnostic archetypes. These are not learned unsupervised clusters, so the paper makes no claim about cluster discovery or cluster quality.</p>
+  <div class="caution"><strong>Operating boundary.</strong> This is a research POC for human decision support. Fresh client-level validation and human diagnosis are required before operational use on materially new populations.</div>
+</section>
+
+<section id="recommendations">
+  <div class="eyebrow">7 · Ranked recommendations</div>
+  <h2>Turn the score into a review starting point—not an automatic edit</h2>
+  <p>The final research artifact is a top-50 human-review queue. It is divided into 10 P1, 15 P2 and 25 P3 pages and uses transparent reason codes to explain why a reviewer should look.</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Diagnostic archetype</th><th>Pages</th><th>Suggested review starting point</th></tr></thead>
+    <tbody>
+      <tr><td>CTR_AND_STALE</td><td>8</td><td>Review CTR context and content freshness together</td></tr>
+      <tr><td>CTR_OPPORTUNITY</td><td>5</td><td>Review search snippet, SERP context and intent</td></tr>
+      <tr><td>STALE_RISK</td><td>17</td><td>Review freshness and whether the content remains current</td></tr>
+      <tr><td>MODEL_RISK_ONLY</td><td>20</td><td>Diagnose before editing; model risk alone is not an action</td></tr>
+    </tbody>
+  </table></div>
+
+  <p><strong>CTR relative to position</strong> is a confirmed diagnostic cue in this sample: observed decline rate is 74.66% in the bottom quartile versus 52.33% in the top quartile. <strong>Content age</strong> is a mixed freshness cue: the youngest bucket has 55.72% observed decline versus 84.96% in the oldest, but the middle buckets are not monotonic. Neither signal is evidence that a specific edit will cause recovery.</p>
+
+  <figure>
+    <img src="assets/capstone_action_playbook.png" alt="Three-panel chart showing the top-50 queue composition by priority band, diagnostic archetype and reason-code frequency.">
+    <figcaption>Figure 3. Composition of the top-50 human-review queue.<span class="caption-takeaway">Takeaway: the output is structured for review and diagnosis; the counts do not imply intervention effects.</span></figcaption>
+  </figure>
+
+  <h3>Human-review rule</h3>
+  <p>For every row, check data sanity, search context, content context, business value/cost and action fit before choosing <code>APPROVE_REVIEW_ACTION</code>, <code>DEFER_FOR_MORE_CONTEXT</code>, <code>NO_CHANGE</code> or <code>ESCALATE</code>.</p>
+
+  <h3>No-go rules</h3>
+  <p>Do not automatically rewrite, publish, delete, redirect, unpublish or change metadata from the queue; do not treat the score as a calibrated probability; do not treat age or low CTR as proof that an edit will help; do not hide unfavorable validation; and do not deploy the learned ranking to materially new clients without fresh validation.</p>
+</section>
+
+<section id="reproducibility">
+  <div class="eyebrow">8 · Reproducibility</div>
+  <h2>Trace every claim back to a committed artifact</h2>
+  <p>The notebook and machine-readable receipts in the public repository are the analytical source of truth. The static page is only the communication layer.</p>
+  <ul>
+    <li><a href="https://github.com/NiknaxTheGreek/flyrank-ml-internship/blob/main/work/notebooks/w03_data_contract.ipynb">Data contract and five-feature reduction</a></li>
+    <li><a href="https://github.com/NiknaxTheGreek/flyrank-ml-internship/blob/main/work/notebooks/w04_baseline_score.ipynb">Frozen classification, regression and ranking baselines</a></li>
+    <li><a href="https://github.com/NiknaxTheGreek/flyrank-ml-internship/blob/main/work/notebooks/w05_model.ipynb">Model selection, grouped CV and ranking blend</a></li>
+    <li><a href="https://github.com/NiknaxTheGreek/flyrank-ml-internship/blob/main/work/notebooks/w06_validation_audit.ipynb">Validation, leakage and error audit</a></li>
+    <li><a href="https://github.com/NiknaxTheGreek/flyrank-ml-internship/blob/main/work/notebooks/w07_action_playbook.ipynb">Human-review action playbook</a></li>
+    <li><a href="https://github.com/NiknaxTheGreek/flyrank-ml-internship/blob/main/work/notebooks/capstone.ipynb">Executed capstone notebook</a></li>
+    <li><a href="https://github.com/NiknaxTheGreek/flyrank-ml-internship/blob/main/work/methodology_consistency_check.py">Cross-assignment methodology consistency gate</a></li>
+  </ul>
+  <p><strong>Frozen design:</strong> March 2026 predictors, 31 March decision point, April 2026 outcome; five active features; client-grouped outer split with random state 42; five-fold client-grouped development CV; K=50 for the primary ranking metric.</p>
+  <p>Assignments that rebuild directly from the gated warehouse require approved access to <a href="https://huggingface.co/datasets/FlyRank/internship-warehouse">FlyRank/internship-warehouse</a> and an <code>HF_TOKEN</code>. The capstone reruns from committed public-safe receipts and figures, allowing the paper evidence to be inspected without exposing private client-level data.</p>
+</section>
+
+<section id="acknowledgments">
+  <div class="eyebrow">9 · Acknowledgments & data credit</div>
+  <h2>Data credit</h2>
+  <p><strong><a href="https://flyrank.ai">Built on the FlyRank ML Internship dataset</a>.</strong></p>
+  <p>The analysis uses the pseudonymized FlyRank internship warehouse release documented in the repository. Public outputs are aggregate and do not expose client names, domains, URLs, page titles, raw search queries, credentials or other private identifiers.</p>
+  <p>This is an educational/research proof of concept for human decision support. It does not claim access to Google's ranking algorithm and does not estimate causal effects of content interventions.</p>
+</section>
+</main>
+
+<footer>
+  <p>FlyRank ML Internship capstone · Nicholas Perikli · 2026</p>
+</footer>
+</body>
+</html>
