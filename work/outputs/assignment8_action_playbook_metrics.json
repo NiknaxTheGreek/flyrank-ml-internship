@@ -34,5 +34,70 @@
     "automatic_edit_or_publish_allowed": false,
     "reason_codes_are_causal_claims": false,
     "future_outcome_written_to_queue": false
+  },
+  "intended_use_and_limits": {
+    "intended_user": "content / SEO analyst or editor",
+    "supported_decision": "prioritize a top-50 human-review queue and choose a diagnostic starting point",
+    "unsupported_decisions": [
+      "automatic edit",
+      "automatic refresh",
+      "automatic rewrite",
+      "automatic delete or redirect",
+      "automatic publish",
+      "causal claim that the suggested action will improve performance"
+    ],
+    "time_design": {
+      "feature_window": "March 2026",
+      "decision_cutoff": "2026-03-31",
+      "outcome_window": "April 2026"
+    },
+    "poc_population": {
+      "pages": 2520,
+      "clients": 21,
+      "development_pages": 1800,
+      "development_clients": 15,
+      "stress_test_pages": 720,
+      "stress_test_clients": 6
+    },
+    "observability": {
+      "march_feature_eligible_pages": 106546,
+      "march_feature_eligible_clients": 37,
+      "april_observable_pages": 95633,
+      "april_observable_clients": 37,
+      "march_pages_excluded_for_insufficient_april_observability": 10913,
+      "pct_march_pages_retained_for_observable_outcome": 89.75747564432264
+    },
+    "development_evidence": {
+      "classification_roc_auc": 0.6650253727996942,
+      "regression_rmse": 0.806274586196414,
+      "ranking_precision_at_50": 0.8720000000000001
+    },
+    "stress_test_evidence": {
+      "classification_roc_auc": 0.4941718176398606,
+      "classification_baseline_roc_auc": 0.5,
+      "regression_rmse": 1.3790633223781805,
+      "regression_baseline_rmse": 1.4311128557344202,
+      "ranking_precision_at_50": 0.36,
+      "ranking_baseline_precision_at_50": 0.48
+    },
+    "decay_refresh_interpretation": {
+      "age_signal_verdict": "MIXED",
+      "oldest_bucket_decline_rate": 0.8496,
+      "youngest_bucket_decline_rate": 0.5572,
+      "middle_bucket_decline_rates": [
+        0.7208,
+        0.6581
+      ],
+      "causal_refresh_effect_estimated": false,
+      "safe_use": "age is a freshness-review cue, not proof of monotonic decay or refresh benefit"
+    },
+    "ctr_review_interpretation": {
+      "signal_verdict": "CONFIRMED",
+      "bottom_quartile_decline_rate": 0.7466,
+      "top_quartile_decline_rate": 0.5233,
+      "causal_ctr_edit_effect_estimated": false,
+      "safe_use": "low within-position CTR is a diagnostic cue, not proof that editing CTR will cause recovery"
+    },
+    "operating_mode": "research POC / human decision-support only"
   }
 }
