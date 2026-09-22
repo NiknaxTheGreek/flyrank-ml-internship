@@ -108,5 +108,6 @@ jobs:
             echo "No capstone execution changes to commit."
           else
             git commit -m "Save executed Assignment 9 capstone [skip ci]"
+            git pull --rebase origin main
             git push
           fi
