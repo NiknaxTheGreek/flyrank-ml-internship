@@ -5,14 +5,14 @@
       "order": 1,
       "path": "work/figures/capstone_methodology_design.png",
       "role": "decision point, temporal information boundary, and client-level validation design",
-      "caption": "March-only features are fixed at the 31 March 2026 decision point; April provides the future outcome. Model selection occurs on 15 development clients, followed by a sealed six-client stress test.",
+      "caption": "March-only features are fixed at the 31 March 2026 decision point; April provides the future outcome. Model selection occurs on 15 development clients, followed by a six-client stress-test set with zero client overlap.",
       "public_safe": true
     },
     {
       "order": 2,
       "path": "work/figures/capstone_model_vs_baseline.png",
-      "role": "model-versus-baseline comparison across development CV and held-out client stress test",
-      "caption": "Learned components improve over frozen baselines during grouped development CV, but on six unseen clients only regression retains a modest improvement; classification and ranking do not beat baseline.",
+      "role": "model-versus-baseline comparison across development CV and client-separated stress test",
+      "caption": "Learned components improve over frozen baselines during grouped development CV, but on the six-client stress-test subset only regression retains a modest improvement; classification and ranking do not beat baseline.",
       "public_safe": true
     },
     {
