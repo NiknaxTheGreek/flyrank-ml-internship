@@ -62,7 +62,7 @@ for snippet in [
     "2,520",
     "21 pseudonymized clients",
     "1,800 pages from 15 clients",
-    "720 pages from 6 unseen clients",
+    "720 pages from 6 stress-test clients",
     "0.665",
     "0.806",
     "0.872",
@@ -72,6 +72,9 @@ for snippet in [
     "0.480",
     "89.76%",
     "18 true future declines and 32 false picks",
+    "303 false positives",
+    "57 false negatives",
+    "296 declines outside the top 50",
 ]:
     require(snippet in text, f"missing expected verified paper value: {snippet}")
 
@@ -106,6 +109,8 @@ for phrase in [
     "guarantees",
     "production-ready",
     "universally generalizes",
+    "sealed stress test",
+    "six unseen clients",
 ]:
     require(phrase.lower() not in text.lower(), f"unsupported claim language present: {phrase}")
 
