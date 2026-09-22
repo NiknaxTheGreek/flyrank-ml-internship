@@ -2,6 +2,20 @@
 
 **Applied Search Intelligence: Google Search Ranking & Discoverability**
 
+## Completed capstone
+
+**Capstone:** *Which Content Pages Should Be Reviewed First? — A leakage-safe framework for future performance risk and human review*
+
+- **Public research paper:** https://flyrank-content-review-capstone.onrender.com
+- **Executed capstone notebook:** [`work/notebooks/capstone.ipynb`](work/notebooks/capstone.ipynb)
+- **Assignment work:** [`work/notebooks/`](work/notebooks/)
+- **Submission pointer:** [`submission/paper_url.txt`](submission/paper_url.txt)
+- **Status:** Capstone complete and deployment/publication checks passing.
+
+The final study uses March 2026 decision-time features to estimate April performance change, combines classification and signed regression into a top-50 human-review ranking, and validates with client-separated grouped evaluation. The final framing preserves the mixed transfer result: development validation improved over frozen baselines, while the six-client stress test showed only a modest regression improvement and no classification/ranking improvement over their transparent baselines.
+
+---
+
 This is the starting point for the FlyRank ML Internship. You **clone it into your own public
 repo** (one click — *Use this template*), build everything there, and submit that repo URL on
 each assignment in your portal — it's your workspace, your submission, and your portfolio all
