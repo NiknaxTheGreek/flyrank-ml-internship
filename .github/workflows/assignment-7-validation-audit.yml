@@ -1,0 +1,125 @@
+name: assignment-7-validation-audit
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "work/notebooks/w06_validation_audit.ipynb"
+      - ".github/workflows/assignment-7-validation-audit.yml"
+      - "requirements.txt"
+  workflow_dispatch:
+
+concurrency:
+  group: assignment-7-validation-audit-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  run-assignment-7:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      HF_TOKEN: ${{ secrets.HF_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Require the repository HF_TOKEN
+        run: |
+          if [ -z "$HF_TOKEN" ]; then
+            echo "::error::HF_TOKEN repository secret is not configured."
+            exit 1
+          fi
+
+      - name: Install notebook runtime
+        run: |
+          pip install -r requirements.txt
+          pip install nbformat nbclient ipykernel pandas numpy duckdb scikit-learn
+
+      - name: Execute Assignment 7 against the gated warehouse
+        run: |
+          python - <<'PY'
+          import nbformat
+          from nbclient import NotebookClient
+
+          src = "work/notebooks/w06_validation_audit.ipynb"
+          out = "work/notebooks/w06_validation_audit.executed.ipynb"
+
+          nb = nbformat.read(src, as_version=4)
+          client = NotebookClient(
+              nb,
+              timeout=1500,
+              kernel_name="python3",
+              resources={"metadata": {"path": "work/notebooks"}},
+          )
+          client.execute()
+          nbformat.write(nb, out)
+          print(f"EXECUTED_NOTEBOOK={out}")
+          PY
+
+      - name: Print Assignment 7 outputs
+        if: always()
+        run: |
+          python - <<'PY'
+          import os
+          import nbformat
+
+          paths = [
+              "work/notebooks/w06_validation_audit.executed.ipynb",
+              "work/notebooks/w06_validation_audit.ipynb",
+          ]
+          path = next((p for p in paths if os.path.exists(p)), None)
+          if path is None:
+              raise SystemExit("No Assignment 7 notebook found.")
+
+          nb = nbformat.read(path, as_version=4)
+          for i, cell in enumerate(nb.cells):
+              if cell.cell_type != "code" or not cell.get("outputs"):
+                  continue
+              print(f"===== CELL {i} =====")
+              for out in cell.outputs:
+                  if out.output_type == "stream":
+                      print(out.text)
+                  elif out.output_type in ("execute_result", "display_data"):
+                      data = out.get("data", {})
+                      if "text/plain" in data:
+                          print(data["text/plain"])
+                  elif out.output_type == "error":
+                      print(out.get("ename"), out.get("evalue"))
+          PY
+
+      - name: Upload executed Assignment 7 notebook
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: w06-validation-audit-executed
+          path: work/notebooks/w06_validation_audit.executed.ipynb
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Save executed outputs into the deliverable notebook
+        if: success()
+        run: |
+          cp work/notebooks/w06_validation_audit.executed.ipynb work/notebooks/w06_validation_audit.ipynb
+          rm work/notebooks/w06_validation_audit.executed.ipynb
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add work/notebooks/w06_validation_audit.ipynb
+          if [ -f work/outputs/assignment7_split_audit.json ]; then
+            git add work/outputs/assignment7_split_audit.json
+          fi
+
+          if git diff --cached --quiet; then
+            echo "No notebook changes to commit."
+          else
+            git commit -m "Save executed Assignment 7 split audit [skip ci]"
+            git push
+          fi
