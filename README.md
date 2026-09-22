@@ -1,4 +1,4 @@
-# FlyRank ML Internship — Starter Repo
+# FlyRank ML Internship — Completed Capstone Repository
 
 **Applied Search Intelligence: Google Search Ranking & Discoverability**
 
@@ -107,7 +107,7 @@ That runs the whole pipeline on the bundled sample and writes results to `output
 
 ---
 
-## The pipeline (what `run_all.py` does)
+## Starter reference pipeline (what `run_all.py` does)
 
 ```text
 01_prepare_features.py   clean + build the feature vector, define the label
@@ -117,10 +117,11 @@ That runs the whole pipeline on the bundled sample and writes results to `output
 05_build_pdf_report.py   a shareable PDF summary
 ```
 
-On the bundled sample, the learned model clearly beats the hand-written rule at picking the right
+**Reference-only note:** the numbers in this section come from the bundled starter sample and are not capstone results. The final capstone evidence is reported in `work/notebooks/capstone.ipynb` and the deployed research paper above.
+
+On the bundled starter sample, the reference model beats the hand-written rule at picking the right
 pages to review first (**Precision@50 ≈ 0.24 → 0.74**; the model number can land 0.68–0.74
-depending on library versions — the ~3x lift is the point). The notebooks compute these numbers
-live, so they always reflect the current data and environment.
+depending on library versions). These figures demonstrate the starter pipeline only.
 
 **Teaching point:** the model is the capstone, but the *workflow* is the lesson —
 `problem framing → data cleaning → baseline → first model → evaluation → explainable recommendation`.
