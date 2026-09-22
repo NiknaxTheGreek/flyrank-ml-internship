@@ -82,7 +82,7 @@ required = {
     "assignment_8": [
         "the ranking converts negative predictions into decline severity",
         "research POC / human decision-support only",
-        "ranking below the 0.480 rule baseline",
+        "below the fixed-rule baseline of **0.480**",
     ],
     "assignment_9": [
         "Grouping is descriptive, not learned clustering",
