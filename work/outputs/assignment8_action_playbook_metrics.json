@@ -1,0 +1,38 @@
+{
+  "queue_definition": {
+    "source_population": "previously held-out six-client stress-test set",
+    "source_pages": 720,
+    "queue_size": 50,
+    "validated_cutoff": "top 50 because Assignment 6/7 evaluated ranking at Precision@50",
+    "ranking_formula": "p_decline^gamma * (1 + lambda * normalized_predicted_decline_severity)",
+    "gamma": 2.0,
+    "lambda": 1.0,
+    "severity_scale": 0.47977155635777924
+  },
+  "reason_code_counts": {
+    "MODEL_TOP50_RISK": 50,
+    "LOW_CTR_FOR_POSITION": 13,
+    "STALE_366_PLUS": 25
+  },
+  "archetype_counts": {
+    "CTR_AND_STALE": 8,
+    "CTR_OPPORTUNITY": 5,
+    "MODEL_RISK_ONLY": 20,
+    "STALE_RISK": 17
+  },
+  "action_map": {
+    "CTR_AND_STALE": "REVIEW_CTR_AND_CONTENT_REFRESH",
+    "CTR_OPPORTUNITY": "REVIEW_SEARCH_SNIPPET_AND_INTENT",
+    "STALE_RISK": "REVIEW_CONTENT_FRESHNESS",
+    "MODEL_RISK_ONLY": "DIAGNOSE_BEFORE_EDIT"
+  },
+  "observed_stress_test_precision_at_50": 0.36,
+  "observed_stress_test_true_declines_in_top50": 18,
+  "grouped_development_precision_at_50": 0.8720000000000001,
+  "guardrails": {
+    "human_review_required_for_every_row": true,
+    "automatic_edit_or_publish_allowed": false,
+    "reason_codes_are_causal_claims": false,
+    "future_outcome_written_to_queue": false
+  }
+}
