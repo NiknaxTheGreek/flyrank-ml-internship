@@ -76,7 +76,7 @@
       <a class="button" href="https://github.com/NiknaxTheGreek/flyrank-ml-internship/blob/main/work/notebooks/capstone.ipynb">Capstone notebook</a>
       <a class="button" href="https://flyrank.ai">FlyRank data credit</a>
     </div>
-    <div class="takeaway"><strong>Empirical takeaway.</strong> The learned pipeline improved on its frozen baselines during client-separated development validation, but that advantage did not transfer consistently to six unseen clients: regression improved modestly, while classification and the final top-50 ranking did not beat baseline.</div>
+    <div class="takeaway"><strong>Empirical takeaway.</strong> The learned pipeline improved on its frozen baselines during client-separated development validation, but that advantage did not transfer consistently to the six-client stress-test subset: regression improved modestly, while classification and the final top-50 ranking did not beat baseline.</div>
     <div class="meta">
       <div><span class="small">Final POC</span><strong>2,520 pages · 21 clients</strong></div>
       <div><span class="small">Decision point</span><strong>31 March 2026</strong></div>
@@ -151,7 +151,7 @@
 
   <h3>Baselines and validation</h3>
   <p>The frozen baselines are a training-prior classifier, a training-mean regressor, and a transparent ranking rule based on low CTR relative to position plus a staleness boost. All comparisons use the same outcome definitions and evaluation populations.</p>
-  <p>The outer split is grouped by client with <code>GroupShuffleSplit(test_size=0.25, random_state=42)</code>: 1,800 pages from 15 clients for development and 720 pages from 6 unseen clients for the sealed stress test, with zero client overlap. Model selection uses five-fold client-grouped cross-validation on the development clients only.</p>
+  <p>The outer split is grouped by client with <code>GroupShuffleSplit(test_size=0.25, random_state=42)</code>: 1,800 pages from 15 clients for development and 720 pages from 6 stress-test clients, with zero client overlap. Model selection uses five-fold client-grouped cross-validation on the development clients only. Because the six-client subset had been inspected earlier in the project, it is used as a client-separated transfer stress test rather than presented as pristine never-before-seen confirmation.</p>
 
   <figure>
     <img src="assets/capstone_methodology_design.png" alt="Diagram showing March 2026 features, 31 March decision point, April 2026 outcome, and client-separated development and stress-test sets.">
@@ -164,8 +164,8 @@
 
 <section id="results">
   <div class="eyebrow">5 · Results</div>
-  <h2>Development signal did not transfer consistently to unseen clients</h2>
-  <p>Results are reported in two layers because development validation and unseen-client transfer answer different questions.</p>
+  <h2>Development signal did not transfer consistently across the stress-test clients</h2>
+  <p>Results are reported in two layers because grouped development validation and client-separated transfer stress testing answer different questions.</p>
 
   <h3>Client-separated development validation</h3>
   <div class="table-wrap"><table>
@@ -177,7 +177,7 @@
     </tbody>
   </table></div>
 
-  <h3>Six-client sealed stress test</h3>
+  <h3>Six-client client-separated stress test</h3>
   <div class="table-wrap"><table>
     <thead><tr><th>Task</th><th>Metric</th><th>Frozen baseline</th><th>Learned</th><th>Interpretation</th></tr></thead>
     <tbody>
@@ -189,10 +189,14 @@
 
   <figure>
     <img src="assets/capstone_model_vs_baseline.png" alt="Three-panel bar chart comparing frozen baselines and learned models for classification, regression and ranking in development validation and the six-client stress test.">
-    <figcaption>Figure 2. Learned model versus frozen baseline in the two validation layers.<span class="caption-takeaway">Takeaway: all three components improved during development validation, but only regression retained an improvement on six unseen clients.</span></figcaption>
+    <figcaption>Figure 2. Learned model versus frozen baseline in the two validation layers.<span class="caption-takeaway">Takeaway: all three components improved during development validation, but only regression retained an improvement on the six-client stress-test subset.</span></figcaption>
   </figure>
 
-  <p>The learned stress-test top 50 contained <strong>18 true future declines and 32 false picks</strong>. The finding is therefore validation-sensitive: the pipeline contains useful structure, but the primary ranked-review product did not generalize reliably to the six held-out clients.</p>
+  <p>The learned stress-test top 50 contained <strong>18 true future declines and 32 false picks</strong>. The finding is therefore validation-sensitive: the pipeline contains useful structure, but the primary ranked-review product did not transfer reliably to the six-client stress-test subset.
+
+  <h3>Error and failure analysis</h3>
+  <p>At the default classification threshold, the stress-test classifier produced <strong>303 false positives</strong> and <strong>57 false negatives</strong>. The regression model had a median absolute error of <strong>0.512</strong>, while its largest absolute error reached <strong>9.307</strong>, showing meaningful tail risk even though overall RMSE remained slightly better than baseline. The top-50 ranking captured 18 future declines, made 32 false picks and left <strong>296 declines outside the top 50</strong>.</p>
+  <p>Permutation importance identified <code>aggregate_ctr</code> as the strongest of the five features for both learned models on this stress-test subset. Because classification did not beat baseline here, that importance result is treated only as a diagnostic description of model behavior—not as evidence that CTR causes future performance change or that the feature will generalize reliably.</p></p>
 
   <h3>Why client separation matters</h3>
   <p>A validation audit compared naive random-page CV with client-grouped CV on the same 1,800 development pages. Random-page validation reused all 15 clients across train and validation folds and produced classification ROC-AUC 0.725 and ranking Precision@50 0.948; client-grouped validation reduced client overlap to zero and produced 0.665 and 0.872 respectively. The more optimistic random-page results illustrate the risk of learning client-specific structure that does not transfer.</p>
@@ -202,7 +206,7 @@
   <div class="eyebrow">6 · Limitations & honest framing</div>
   <h2>What this evidence can—and cannot—support</h2>
   <div class="cards">
-    <div class="card"><strong>Unseen-client transfer</strong>Classification and ranking failed to beat their frozen baselines on six held-out clients, so reliable cross-client generalization is not established.</div>
+    <div class="card"><strong>Cross-client transfer</strong>Classification and ranking failed to beat their frozen baselines on the six-client stress-test subset, so reliable cross-client generalization is not established.</div>
     <div class="card"><strong>Balanced POC sample</strong>The 2,520 pages are deliberately balanced by client and exposure tier; sample prevalence is not natural FlyRank-wide prevalence.</div>
     <div class="card"><strong>Outcome observability</strong>89.76% of March feature-eligible pages had sufficient April observations; excluded pages may differ systematically.</div>
     <div class="card"><strong>Short horizon</strong>The design tests March → April 2026, not seasonality, long-term drift or all future periods.</div>
