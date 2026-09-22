@@ -1,0 +1,31 @@
+{
+  "assignment": 8,
+  "status": "COMPLETE (submission pending)",
+  "deliverable": "work/notebooks/w07_action_playbook.ipynb",
+  "requirements": {
+    "ranked_actions_and_reason_codes": true,
+    "archetype_to_action_mapping": true,
+    "decay_refresh_insight": true,
+    "intended_use_and_limits": true,
+    "human_review_rules": true,
+    "explicit_no_go_list": true,
+    "cost_value_thinking": true,
+    "monitoring_and_retrain_triggers": true,
+    "paper_exports": true,
+    "self_check": true
+  },
+  "validation": {
+    "all_completion_checks_passed": true,
+    "completion_check_count": 15,
+    "queue_rows": 50,
+    "automatic_action_allowed": false,
+    "unseen_client_revalidation_required": true
+  },
+  "committed_artifacts": [
+    "work/notebooks/w07_action_playbook.ipynb",
+    "work/outputs/assignment8_action_playbook_metrics.json",
+    "work/outputs/assignment8_paper_export.json",
+    "work/figures/assignment8_ranking_validation.png"
+  ],
+  "runtime_artifact_not_committed_by_design": "work/outputs/action_playbook_queue.csv"
+}
