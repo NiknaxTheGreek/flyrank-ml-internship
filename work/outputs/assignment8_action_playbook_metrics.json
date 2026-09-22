@@ -201,5 +201,12 @@
       "outcome_performance_review": "after each completed future outcome window",
       "new_client_validation": "before operational use"
     }
+  },
+  "paper_exports": {
+    "queue_csv": "../outputs/action_playbook_queue.csv",
+    "paper_export_json": "../outputs/assignment8_paper_export.json",
+    "ranking_validation_figure": "../figures/assignment8_ranking_validation.png",
+    "queue_contains_future_outcome": false,
+    "figure_shows_development_and_stress_test": true
   }
 }
