@@ -96,8 +96,12 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add work/notebooks/capstone.ipynb
-          if [ -f work/figures/capstone_model_vs_baseline.png ]; then
-            git add work/figures/capstone_model_vs_baseline.png
+          if ls work/figures/capstone_*.png >/dev/null 2>&1; then
+            git add work/figures/capstone_*.png
+          fi
+
+          if [ -f work/outputs/capstone_artifact_manifest.json ]; then
+            git add work/outputs/capstone_artifact_manifest.json
           fi
 
           if git diff --cached --quiet; then
