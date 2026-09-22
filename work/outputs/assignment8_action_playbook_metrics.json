@@ -147,79 +147,59 @@
     "final_decision_maker": "human_reviewer"
   },
   "monitoring_and_retrain_policy": {
-    "evidence_references": {
-      "grouped_dev_ranking_precision_at_50": 0.8720000000000001,
-      "stress_test_ranking_precision_at_50": 0.36,
-      "stress_test_rule_baseline_precision_at_50": 0.48,
-      "stress_test_classification_roc_auc": 0.4941718176398606,
-      "stress_test_regression_rmse": 1.3790633223781805,
-      "stress_test_regression_baseline_rmse": 1.4311128557344202,
-      "reference_outcome_observability_share": 0.8975747564432264
-    },
-    "hard_data_quality_triggers": [
-      "required_feature_missing_or_type_changed",
-      "future_or_post_decision_field_enters_features",
+    "hard_stop_checks": [
+      "required_feature_missing",
+      "non_finite_required_feature",
       "feature_outcome_window_overlap",
-      "identifier_used_as_predictor"
+      "forbidden_or_future_field_in_feature_matrix",
+      "availability_or_observability_contract_broken",
+      "unexpected_row_grain_change"
     ],
-    "performance_triggers": {
-      "ranking": "revalidate if fresh Precision@50 <= corresponding rule baseline",
-      "classification": "revalidate if fresh ROC-AUC <= 0.50",
-      "regression": "revalidate if fresh RMSE >= simple baseline RMSE",
-      "client_heterogeneity": "review if client-level results are sharply inconsistent"
-    },
-    "heuristic_triggers": {
-      "observability_warning_below": 0.8475747564432263,
-      "psi_review_at_or_above": 0.1,
-      "psi_retrain_review_above": 0.25,
-      "top50_overlap_review_below": 0.5
-    },
-    "human_feedback_signals": [
-      "no_change_rate",
-      "defer_rate",
-      "escalation_rate",
-      "reviewer_disagreement",
-      "repeated_rejection_reason"
+    "early_warning_monitors": [
+      "five_feature_distribution_shift",
+      "share_outside_reference_feature_ranges",
+      "reason_code_mix_shift",
+      "archetype_mix_shift",
+      "top50_overlap_change",
+      "unscorable_page_share"
     ],
-    "response_sequence": [
-      "check_data_quality_and_window_alignment",
-      "rerun_frozen_model_on_fresh_labeled_window",
-      "compare_against_same_transparent_baseline",
-      "retrain_only_if_deterioration_remains",
-      "repeat_grouped_validation_and_independent_stress_test_before_replacement"
-    ],
-    "automatic_retraining_allowed": false,
-    "broader_deployment_requires_fresh_independent_validation": true
-  },
-  "monitoring_snapshot": {
-    "model_risk_only_share": 0.4,
-    "largest_single_client_queue_share": 0.5,
-    "feature_psi": [
-      {
-        "feature": "aggregate_ctr",
-        "psi": 0.13331333750745772,
-        "status": "review"
+    "performance_references": {
+      "grouped_development": {
+        "classification_roc_auc": 0.6650253727996942,
+        "regression_rmse": 0.806274586196414,
+        "ranking_precision_at_50": 0.8720000000000001
       },
-      {
-        "feature": "median_position",
-        "psi": 0.06390677451502838,
-        "status": "stable"
-      },
-      {
-        "feature": "position_slope_per_day",
-        "psi": 0.03288539949178214,
-        "status": "stable"
-      },
-      {
-        "feature": "position_iqr",
-        "psi": 0.0852468860841985,
-        "status": "stable"
-      },
-      {
-        "feature": "content_age_days",
-        "psi": 0.5209980847489756,
-        "status": "strong_drift"
+      "six_client_stress_test": {
+        "classification_roc_auc": 0.4941718176398606,
+        "classification_baseline_roc_auc": 0.5,
+        "regression_rmse": 1.3790633223781805,
+        "regression_baseline_rmse": 1.4311128557344202,
+        "ranking_precision_at_50": 0.36,
+        "ranking_baseline_precision_at_50": 0.48
       }
-    ]
+    },
+    "current_trigger_state": {
+      "classification_below_frozen_baseline": true,
+      "regression_not_better_than_frozen_baseline": false,
+      "ranking_below_frozen_baseline": true,
+      "unseen_client_revalidation_required": true
+    },
+    "retrain_policy": {
+      "retrain_on_calendar_only": false,
+      "valid_retrain_reasons": [
+        "confirmed performance deterioration versus frozen baseline",
+        "material population or feature-distribution shift",
+        "new representative historical data",
+        "changed decision problem or target"
+      ],
+      "new_client_policy": "fresh validation required before operational use on a materially new client population",
+      "ranking_is_primary_product_metric": true
+    },
+    "cadence": {
+      "data_contract_checks": "every scoring run",
+      "queue_composition_review": "every scoring run",
+      "outcome_performance_review": "after each completed future outcome window",
+      "new_client_validation": "before operational use"
+    }
   }
 }
