@@ -118,7 +118,7 @@
       "client_overlap": 0,
       "decline_base_rate": 0.775,
       "classification_roc_auc": 0.8083986017080401,
-      "regression_rmse": 0.6010156440616972,
+      "regression_rmse": 0.601015644061697,
       "ranking_precision_at_50": 1.0
     },
     {

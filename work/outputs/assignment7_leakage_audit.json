@@ -1,0 +1,81 @@
+{
+  "active_features": [
+    "aggregate_ctr",
+    "median_position",
+    "position_slope_per_day",
+    "position_iqr",
+    "content_age_days"
+  ],
+  "forbidden_feature_overlap": [],
+  "feature_audit": [
+    {
+      "feature": "aggregate_ctr",
+      "source": "March clicks / March impressions",
+      "available_by": "2026-03-31",
+      "label_derived": false,
+      "future_overlap": false,
+      "decision_derived": false,
+      "identifier": false,
+      "verdict": "PASS"
+    },
+    {
+      "feature": "median_position",
+      "source": "March daily GSC positions",
+      "available_by": "2026-03-31",
+      "label_derived": false,
+      "future_overlap": false,
+      "decision_derived": false,
+      "identifier": false,
+      "verdict": "PASS"
+    },
+    {
+      "feature": "position_slope_per_day",
+      "source": "March daily GSC positions over time",
+      "available_by": "2026-03-31",
+      "label_derived": false,
+      "future_overlap": false,
+      "decision_derived": false,
+      "identifier": false,
+      "verdict": "PASS"
+    },
+    {
+      "feature": "position_iqr",
+      "source": "March daily GSC positions",
+      "available_by": "2026-03-31",
+      "label_derived": false,
+      "future_overlap": false,
+      "decision_derived": false,
+      "identifier": false,
+      "verdict": "PASS"
+    },
+    {
+      "feature": "content_age_days",
+      "source": "creation date measured at 2026-03-31",
+      "available_by": "2026-03-31",
+      "label_derived": false,
+      "future_overlap": false,
+      "decision_derived": false,
+      "identifier": false,
+      "verdict": "PASS"
+    }
+  ],
+  "population_selection": {
+    "march_feature_eligible_pages": 106546,
+    "march_feature_eligible_clients": 37,
+    "april_observable_pages": 95633,
+    "april_observable_clients": 37,
+    "march_pages_excluded_for_insufficient_april_observability": 10913,
+    "pct_march_pages_retained_for_observable_outcome": 89.75747564432264
+  },
+  "deliberate_leakage_test": {
+    "legal_grouped_cv_roc_auc": 0.6650253727996942,
+    "illegal_target_derived_feature_grouped_cv_roc_auc": 1.0,
+    "roc_auc_jump": 0.3349746272003058
+  },
+  "heldout_error_counts": {
+    "false_negatives": 57,
+    "false_positives": 303,
+    "top50_false_picks": 32,
+    "declines_missed_outside_top50": 296
+  }
+}
