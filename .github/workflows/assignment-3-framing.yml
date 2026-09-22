@@ -68,5 +68,6 @@ jobs:
             echo "No Assignment 3 execution changes to commit."
           else
             git commit -m "Save executed Assignment 3 framing [skip ci]"
+            git pull --rebase origin main
             git push
           fi
