@@ -140,5 +140,6 @@ jobs:
             echo "No Assignment 8 changes to commit."
           else
             git commit -m "Save executed Assignment 8 action playbook [skip ci]"
+            git pull --rebase origin main
             git push
           fi
