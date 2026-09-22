@@ -1,0 +1,160 @@
+{
+  "comparison_role": "counterfactual naive random-page CV vs honest client-grouped CV",
+  "population": {
+    "pages": 1800,
+    "clients": 15
+  },
+  "features": [
+    "aggregate_ctr",
+    "median_position",
+    "position_slope_per_day",
+    "position_iqr",
+    "content_age_days"
+  ],
+  "decline_base_rate": 0.7511111111111111,
+  "frozen_models": {
+    "classifier": "RandomForestClassifier(max_depth=4, max_features='sqrt', min_samples_leaf=5, n_estimators=400)",
+    "regressor": "RandomForestRegressor(max_features='sqrt', min_samples_leaf=30, n_estimators=400)",
+    "ranking": {
+      "gamma": 2.0,
+      "lambda": 1.0,
+      "severity_scale": 0.47977155635777924
+    }
+  },
+  "folds": [
+    {
+      "split": "random_page_cv",
+      "fold": 1,
+      "validation_pages": 360,
+      "validation_clients": 15,
+      "client_overlap": 15,
+      "decline_base_rate": 0.7583333333333333,
+      "classification_roc_auc": 0.7454422971664351,
+      "regression_rmse": 0.9414175334179367,
+      "ranking_precision_at_50": 1.0
+    },
+    {
+      "split": "random_page_cv",
+      "fold": 2,
+      "validation_pages": 360,
+      "validation_clients": 15,
+      "client_overlap": 15,
+      "decline_base_rate": 0.7361111111111112,
+      "classification_roc_auc": 0.7436345580933466,
+      "regression_rmse": 0.851226916659529,
+      "ranking_precision_at_50": 0.94
+    },
+    {
+      "split": "random_page_cv",
+      "fold": 3,
+      "validation_pages": 360,
+      "validation_clients": 15,
+      "client_overlap": 15,
+      "decline_base_rate": 0.7222222222222222,
+      "classification_roc_auc": 0.7306923076923078,
+      "regression_rmse": 0.8196494330421509,
+      "ranking_precision_at_50": 0.94
+    },
+    {
+      "split": "random_page_cv",
+      "fold": 4,
+      "validation_pages": 360,
+      "validation_clients": 15,
+      "client_overlap": 15,
+      "decline_base_rate": 0.8,
+      "classification_roc_auc": 0.6799768518518519,
+      "regression_rmse": 0.8516108370148796,
+      "ranking_precision_at_50": 0.92
+    },
+    {
+      "split": "random_page_cv",
+      "fold": 5,
+      "validation_pages": 360,
+      "validation_clients": 15,
+      "client_overlap": 15,
+      "decline_base_rate": 0.7388888888888889,
+      "classification_roc_auc": 0.723644216925292,
+      "regression_rmse": 0.6292501036147812,
+      "ranking_precision_at_50": 0.94
+    },
+    {
+      "split": "grouped_client_cv",
+      "fold": 1,
+      "validation_pages": 360,
+      "validation_clients": 3,
+      "client_overlap": 0,
+      "decline_base_rate": 0.9361111111111111,
+      "classification_roc_auc": 0.6972003612437104,
+      "regression_rmse": 0.4633669864351455,
+      "ranking_precision_at_50": 1.0
+    },
+    {
+      "split": "grouped_client_cv",
+      "fold": 2,
+      "validation_pages": 360,
+      "validation_clients": 3,
+      "client_overlap": 0,
+      "decline_base_rate": 0.6944444444444444,
+      "classification_roc_auc": 0.5288727272727274,
+      "regression_rmse": 0.7848139830754544,
+      "ranking_precision_at_50": 0.7
+    },
+    {
+      "split": "grouped_client_cv",
+      "fold": 3,
+      "validation_pages": 360,
+      "validation_clients": 3,
+      "client_overlap": 0,
+      "decline_base_rate": 0.6861111111111111,
+      "classification_roc_auc": 0.6894414388592311,
+      "regression_rmse": 0.8436469461867604,
+      "ranking_precision_at_50": 0.86
+    },
+    {
+      "split": "grouped_client_cv",
+      "fold": 4,
+      "validation_pages": 360,
+      "validation_clients": 3,
+      "client_overlap": 0,
+      "decline_base_rate": 0.775,
+      "classification_roc_auc": 0.8083986017080401,
+      "regression_rmse": 0.6010156440616972,
+      "ranking_precision_at_50": 1.0
+    },
+    {
+      "split": "grouped_client_cv",
+      "fold": 5,
+      "validation_pages": 360,
+      "validation_clients": 3,
+      "client_overlap": 0,
+      "decline_base_rate": 0.6638888888888889,
+      "classification_roc_auc": 0.6012137349147618,
+      "regression_rmse": 1.338529371223013,
+      "ranking_precision_at_50": 0.8
+    }
+  ],
+  "summary": [
+    {
+      "split": "grouped_client_cv",
+      "mean_client_overlap": 0.0,
+      "mean_decline_base_rate": 0.7511111111111111,
+      "classification_roc_auc": 0.6650253727996942,
+      "classification_roc_auc_sd": 0.10582618407600126,
+      "regression_rmse": 0.806274586196414,
+      "regression_rmse_sd": 0.3334926019650106,
+      "ranking_precision_at_50": 0.8720000000000001,
+      "ranking_precision_at_50_sd": 0.1300769003320728
+    },
+    {
+      "split": "random_page_cv",
+      "mean_client_overlap": 15.0,
+      "mean_decline_base_rate": 0.7511111111111111,
+      "classification_roc_auc": 0.7246780463458466,
+      "classification_roc_auc_sd": 0.026579787347614785,
+      "regression_rmse": 0.8186309647498554,
+      "regression_rmse_sd": 0.11520943683431623,
+      "ranking_precision_at_50": 0.9480000000000001,
+      "ranking_precision_at_50_sd": 0.030331501776206197
+    }
+  ]
+}
