@@ -99,5 +99,51 @@
       "safe_use": "low within-position CTR is a diagnostic cue, not proof that editing CTR will cause recovery"
     },
     "operating_mode": "research POC / human decision-support only"
+  },
+  "human_review_policy": {
+    "review_decisions": [
+      "APPROVE_REVIEW_ACTION",
+      "DEFER_FOR_MORE_CONTEXT",
+      "NO_CHANGE",
+      "ESCALATE"
+    ],
+    "required_review_checks": [
+      "data_sanity",
+      "search_context",
+      "content_context",
+      "business_value_and_cost",
+      "action_fit"
+    ],
+    "no_go_actions": [
+      "automatic_publish",
+      "automatic_rewrite",
+      "automatic_delete",
+      "automatic_redirect",
+      "automatic_unpublish",
+      "automatic_title_or_meta_change",
+      "treat_p_decline_as_calibrated_probability",
+      "act_on_model_risk_only_without_diagnosis",
+      "treat_age_as_proof_refresh_is_required",
+      "treat_low_ctr_as_proof_edit_will_improve_traffic",
+      "use_identifiers_as_predictive_features",
+      "train_with_future_or_post_decision_leakage",
+      "hide_unfavorable_validation_results",
+      "deploy_to_unseen_clients_without_fresh_validation",
+      "make_irreversible_or_sensitive_changes_from_queue_alone"
+    ],
+    "escalation_triggers": [
+      "high_value_or_business_critical_page",
+      "legal_compliance_or_contractual_risk",
+      "model_signal_conflicts_with_page_context",
+      "measurement_quality_uncertain",
+      "page_changed_since_feature_window",
+      "reviewer_cannot_explain_action_from_evidence"
+    ],
+    "business_value_policy": {
+      "monetary_roi_estimated": false,
+      "edit_cost_estimated": false,
+      "rule": "model rank prioritizes attention; human business value and intervention cost determine whether action is worth taking"
+    },
+    "final_decision_maker": "human_reviewer"
   }
 }
