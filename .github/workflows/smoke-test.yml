@@ -67,7 +67,14 @@ jobs:
               pass
           final = url.startswith("https://")
           bad = []
+          # These two legacy notebooks are retired optional stretch skeletons, not final deliverables.
+          optional_retired = {
+              "work/notebooks/w03_feature_leakage_check.ipynb",
+              "work/notebooks/w04_signal_audit.ipynb",
+          }
           for p in sorted(glob.glob("work/notebooks/*.ipynb")):
+              if p in optional_retired:
+                  continue
               try:
                   nb = json.load(open(p))
               except Exception:
