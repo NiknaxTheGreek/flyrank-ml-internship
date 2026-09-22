@@ -1,0 +1,134 @@
+name: assignment-8-action-playbook
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "work/notebooks/w07_action_playbook.ipynb"
+      - ".github/workflows/assignment-8-action-playbook.yml"
+      - "requirements.txt"
+  workflow_dispatch:
+
+concurrency:
+  group: assignment-8-action-playbook-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  run-assignment-8:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      HF_TOKEN: ${{ secrets.HF_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Require the repository HF_TOKEN
+        run: |
+          if [ -z "$HF_TOKEN" ]; then
+            echo "::error::HF_TOKEN repository secret is not configured."
+            exit 1
+          fi
+
+      - name: Install notebook runtime
+        run: |
+          pip install -r requirements.txt
+          pip install nbformat nbclient ipykernel pandas numpy duckdb scikit-learn matplotlib
+
+      - name: Execute Assignment 8 against the gated warehouse
+        run: |
+          python - <<'PY'
+          import nbformat
+          from nbclient import NotebookClient
+
+          src = "work/notebooks/w07_action_playbook.ipynb"
+          out = "work/notebooks/w07_action_playbook.executed.ipynb"
+
+          nb = nbformat.read(src, as_version=4)
+          client = NotebookClient(
+              nb,
+              timeout=1500,
+              kernel_name="python3",
+              resources={"metadata": {"path": "work/notebooks"}},
+          )
+          client.execute()
+          nbformat.write(nb, out)
+          print(f"EXECUTED_NOTEBOOK={out}")
+          PY
+
+      - name: Print Assignment 8 outputs
+        if: always()
+        run: |
+          python - <<'PY'
+          import os
+          import nbformat
+
+          paths = [
+              "work/notebooks/w07_action_playbook.executed.ipynb",
+              "work/notebooks/w07_action_playbook.ipynb",
+          ]
+          path = next((p for p in paths if os.path.exists(p)), None)
+          if path is None:
+              raise SystemExit("No Assignment 8 notebook found.")
+
+          nb = nbformat.read(path, as_version=4)
+          for i, cell in enumerate(nb.cells):
+              if cell.cell_type != "code" or not cell.get("outputs"):
+                  continue
+              print(f"===== CELL {i} =====")
+              for out in cell.outputs:
+                  if out.output_type == "stream":
+                      print(out.text)
+                  elif out.output_type in ("execute_result", "display_data"):
+                      data = out.get("data", {})
+                      if "text/plain" in data:
+                          print(data["text/plain"])
+                  elif out.output_type == "error":
+                      print(out.get("ename"), out.get("evalue"))
+          PY
+
+      - name: Upload Assignment 8 execution artifacts
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: w07-action-playbook-executed
+          path: |
+            work/notebooks/w07_action_playbook.executed.ipynb
+            work/outputs/action_playbook_queue.csv
+            work/outputs/assignment8_action_playbook_metrics.json
+            work/figures/*
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Save executed outputs into the deliverable notebook
+        if: success()
+        run: |
+          cp work/notebooks/w07_action_playbook.executed.ipynb work/notebooks/w07_action_playbook.ipynb
+          rm work/notebooks/w07_action_playbook.executed.ipynb
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add work/notebooks/w07_action_playbook.ipynb
+
+          if [ -f work/outputs/assignment8_action_playbook_metrics.json ]; then
+            git add work/outputs/assignment8_action_playbook_metrics.json
+          fi
+
+          if [ -d work/figures ]; then
+            git add work/figures || true
+          fi
+
+          if git diff --cached --quiet; then
+            echo "No Assignment 8 changes to commit."
+          else
+            git commit -m "Save executed Assignment 8 action playbook [skip ci]"
+            git push
+          fi
