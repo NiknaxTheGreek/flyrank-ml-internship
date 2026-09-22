@@ -1,0 +1,72 @@
+name: assignment-3-framing
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "work/notebooks/w02_ml_task_framing.ipynb"
+      - ".github/workflows/assignment-3-framing.yml"
+      - "data/raw/content_refresh_anonymized.csv"
+      - "requirements.txt"
+  workflow_dispatch:
+
+concurrency:
+  group: assignment-3-framing-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  run-assignment-3:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install notebook runtime
+        run: |
+          pip install -r requirements.txt
+          pip install nbformat nbclient ipykernel pandas
+
+      - name: Execute Assignment 3 framing notebook
+        run: |
+          python - <<'PY'
+          import nbformat
+          from nbclient import NotebookClient
+
+          src = "work/notebooks/w02_ml_task_framing.ipynb"
+          out = "work/notebooks/w02_ml_task_framing.executed.ipynb"
+
+          nb = nbformat.read(src, as_version=4)
+          client = NotebookClient(
+              nb,
+              timeout=300,
+              kernel_name="python3",
+              resources={"metadata": {"path": "work/notebooks"}},
+          )
+          client.execute()
+          nbformat.write(nb, out)
+          print(f"EXECUTED_NOTEBOOK={out}")
+          PY
+
+      - name: Save executed Assignment 3 notebook
+        run: |
+          cp work/notebooks/w02_ml_task_framing.executed.ipynb work/notebooks/w02_ml_task_framing.ipynb
+          rm work/notebooks/w02_ml_task_framing.executed.ipynb
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add work/notebooks/w02_ml_task_framing.ipynb
+
+          if git diff --cached --quiet; then
+            echo "No Assignment 3 execution changes to commit."
+          else
+            git commit -m "Save executed Assignment 3 framing [skip ci]"
+            git push
+          fi
