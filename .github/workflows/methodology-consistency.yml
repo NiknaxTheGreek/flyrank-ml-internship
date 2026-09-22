@@ -1,0 +1,29 @@
+name: methodology-consistency
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "work/notebooks/w01_research_question.ipynb"
+      - "work/notebooks/w02_ml_task_framing.ipynb"
+      - "work/notebooks/w03_data_contract.ipynb"
+      - "work/notebooks/w04_baseline_score.ipynb"
+      - "work/notebooks/w05_model.ipynb"
+      - "work/notebooks/w06_validation_audit.ipynb"
+      - "work/notebooks/w07_action_playbook.ipynb"
+      - "work/notebooks/capstone.ipynb"
+      - "work/methodology_consistency_check.py"
+      - ".github/workflows/methodology-consistency.yml"
+  workflow_dispatch:
+
+jobs:
+  consistency:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Check cross-assignment methodology consistency
+        run: python work/methodology_consistency_check.py
